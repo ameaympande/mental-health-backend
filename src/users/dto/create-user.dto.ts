@@ -1,4 +1,12 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsStrongPassword,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -8,6 +16,12 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
 
+  @IsNotEmpty()
+  @IsStrongPassword()
+  password: string;
+
+  @IsOptional()
   @IsEnum(['SUPERUSER', 'ADMIN', 'USER'], { message: 'Valid role required' })
+  @Transform(({ value }) => value || 'USER')
   role: 'SUPERUSER' | 'ADMIN' | 'USER';
 }
