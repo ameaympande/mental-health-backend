@@ -65,8 +65,6 @@ export class UsersService {
       throw new NotFoundException('User not found.');
     }
 
-    console.log(user);
-
     return user;
   }
 
@@ -96,7 +94,6 @@ export class UsersService {
         password: hashedPassword,
         role: createUserDto.role || 'USER',
       };
-      console.log('payload', payload);
 
       const { data: newUser, error: insertError } = await supabase
         .from('users')
