@@ -33,9 +33,15 @@ export class AuthService {
     const user = await this.userModel.create({
       email: dto.email,
       passwordHash,
+      dateOfBirth: dto.dateOfBirth,
+      name: dto.name,
     });
 
-    return this.buildAuthTokens(user.id, user.email);
+    const accessToken = this.buildAuthTokens(user.id, user.email);
+    return {
+      accessToken,
+      user: { userId: user.id, email: user.email, name: user.name },
+    };
   }
 
   async login(dto: LoginDto) {
@@ -44,10 +50,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const passwordValid = await bcrypt.compare(
-      dto.password,
-      user.passwordHash,
-    );
+    const passwordValid = await bcrypt.compare(dto.password, user.passwordHash);
     if (!passwordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
